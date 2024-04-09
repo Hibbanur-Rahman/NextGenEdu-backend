@@ -115,7 +115,7 @@ const loginUser = async (req, res) => {
       });
     }
 
-    SendEmail(email,user.username);
+    // SendEmail(email,user.username);
     const token = await getToken(user);
 
     return res.status(httpStatusCode.OK).json({
