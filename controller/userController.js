@@ -157,8 +157,112 @@ const ViewUsers = async (req, res) => {
   }
 };
 
+
+const ViewStudentDetails = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(httpStatusCode.BAD_REQUEST).json({
+        success: false,
+        errors: errors.array(),
+      });
+    }
+    const user = await UserModel.findById(req.user._id);
+    if (!user) {
+      return res.status(httpStatusCode.NOT_FOUND).json({
+        success: false,
+        message: "student is not found",
+      });
+    }
+    return res.status(httpStatusCode.OK).json({
+      success: true,
+      message: "Student details",
+      data: user,
+    });
+  } catch (error) {
+    return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const UpdateStudentDetails = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(httpStatusCode.BAD_REQUEST).json({
+        success: false,
+        errors: errors.array(),
+      });
+    }
+
+    const {
+      firstname,
+      lastname,
+      email,
+      phone,
+      expertise,
+      username,
+      password,
+      confirmPassword,
+      profileImage,
+      pincode,
+      address,
+      city,
+      country,
+      aboutInfo,
+      personalWebsite,
+      githubProfile,
+    } = req.body.userDetails;
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      req.user._id,
+      {
+        firstname,
+        lastname,
+        phone,
+        expertise,
+        username,
+        profileImage,
+        pincode,
+        address,
+        city,
+        country,
+        aboutInfo,
+        personalWebsite,
+        githubProfile,
+      },
+      { new: true }
+    ); // Ensure you get the updated document back
+
+    if (!updatedUser) {
+      return res.status(httpStatusCode.NOT_FOUND).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    console.log(updatedUser)
+    return res.status(httpStatusCode.OK).json({
+      success: true,
+      message: "User details successfully updated",
+      data: updatedUser,
+    });
+  } catch (error) {
+    return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Failed to update User details",
+      error: error.message,
+    });
+  }
+};
+
+
 module.exports = {
   registerUser,
   loginUser,
   ViewUsers,
+  ViewStudentDetails,
+  UpdateStudentDetails
 };

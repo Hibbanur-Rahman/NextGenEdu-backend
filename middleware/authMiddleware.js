@@ -9,8 +9,7 @@ async function getToken(user) {
 }
 
 async function verifyToken(req, res, next) {
-    const token = req.headers.authorization;
-
+    const token = req.body.headers.Authorization;
     if (!token) {
         return res.status(httpStatusCode.UNAUTHORIZED).json({ success: false, message: 'Unauthorized: Token not provided' });
     }

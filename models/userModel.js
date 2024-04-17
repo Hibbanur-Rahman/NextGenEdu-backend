@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema(
   {
-    firstname:{
+    firstname: {
       type: String,
       required: true,
     },
-    lastname:{
+    lastname: {
       type: String,
       required: true,
     },
@@ -26,10 +26,46 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    expertise: {
+      type: String,
+      required: false,
+    },
+    profileImage: {
+      type: String,
+      required: false,
+    },
+    pincode: {
+      type: String,
+      required: false,
+    },
+    address: {
+      type: String,
+      required: false,
+    },
+    city: {
+      type: String,
+      required: false,
+    },
+    country: {
+      type: String,
+      required: false,
+    },
+    aboutInfo: {
+      type: String,
+      required: false,
+    },
+    personalWebsite: {
+      type: String,
+      required: false,
+    },
+    githubProfile: {
+      type: String,
+      required: false,
+    },
     role: {
       type: String,
       required: true,
-    }
+    },
   },
   { timestamps: true }
 );
