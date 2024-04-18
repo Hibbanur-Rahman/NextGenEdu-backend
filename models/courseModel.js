@@ -41,6 +41,10 @@ const CourseSchema = new mongoose.Schema(
         type:mongoose.Schema.Types.ObjectId,
         ref:"teacher",
         required:false
+    },
+    status:{
+      type:String,
+      required:false
     }
   },
   { timestamps: true }

@@ -5,7 +5,7 @@ const { registerUser, loginUser,ViewUsers, ViewStudentDetails, UpdateStudentDeta
 const { verifyToken } = require("../middleware/authMiddleware");
 const { ViewTeacherDetails, UpdateTeacherDetails } = require("../controller/teacherController");
 const upload = require("../middleware/multerMiddleware");
-const { AddCourse,ViewCourses } = require("../controller/courseController");
+const { AddCourse,ViewCourses, ViewPublishCourseByTeacher, ViewCourseDetailByID } = require("../controller/courseController");
 
 
 Router.post("/register", register);
@@ -28,6 +28,8 @@ Router.post('/upload-profile',upload.single('profileImage'));
 
 //course routes
 Router.post('/add-course',verifyToken,AddCourse);
-Router.get('/view-courses',ViewCourses)
+Router.get('/view-courses',ViewCourses);
+Router.post('/view-course-teacher-publish',verifyToken,ViewPublishCourseByTeacher);
+Router.post('/view-courseDetails-ById',ViewCourseDetailByID);
 
 module.exports = Router;
