@@ -243,7 +243,6 @@ const UpdateStudentDetails = async (req, res) => {
       });
     }
 
-    console.log(updatedUser)
     return res.status(httpStatusCode.OK).json({
       success: true,
       message: "User details successfully updated",

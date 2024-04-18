@@ -65,6 +65,12 @@ const TeacherSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    courses:[
+      {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"course"
+      }
+    ]
   },
   { timestamps: true }
 );
