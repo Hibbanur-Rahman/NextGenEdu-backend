@@ -62,6 +62,18 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    enrolledCourses: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "course",
+      },
+    ],
+    wishlist:[
+      {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'course'
+      }
+    ],
     role: {
       type: String,
       required: true,
