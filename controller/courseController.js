@@ -1,5 +1,6 @@
 const CourseModel = require("../models/courseModel");
 const TeacherModel = require("../models/teacherModel");
+const StudentModel = require("../models/userModel");
 const { validationResult } = require("express-validator");
 const httpStatusCode = require("../constant/httpStatusCode");
 
@@ -109,7 +110,7 @@ const ViewCourses = async (req, res) => {
 const ViewCourseDetailByID = async (req, res) => {
   try {
     const { courseId } = req.body;
-    const course = await CourseModel.findById(courseId).populate('teacherId');
+    const course = await CourseModel.findById(courseId).populate("teacherId");
     if (!course) {
       return res.status(httpStatusCode.BAD_REQUEST).json({
         success: false,
@@ -156,17 +157,50 @@ const ViewPublishCourseByTeacher = async (req, res) => {
   }
 };
 
-const EnrolledCourseByStudentId=async (req,res)=>{
-  try{
+const EnrolledCourseByStudentId = async (req, res) => {
+  try {
+    const studentId = req.user._id;
+    const { courseId } = req.body;
+    if (!courseId) {
+      return res.status(httpStatusCode.BAD_REQUEST).json({
+        success: false,
+        message: "Please provide courseId",
+      });
+    }
+    const student = await StudentModel.findById(studentId);
+    if (!student) {
+      return res.status(httpStatusCode.NOT_FOUND).json({
+        success: false,
+        message: "Student not found!!",
+      });
+    }
+    console.log("course:", courseId);
+    console.log("student", studentId);
+    console.log("enrolledCourses:", student.enrolledCourses);
 
-  }catch(error){
+    const isEnrolled = student.enrolledCourses && student.enrolledCourses.find(course => course.toString() === courseId);
+
+    if (isEnrolled) {
+      return res.status(httpStatusCode.BAD_REQUEST).json({
+        success: false,
+        message: "You are already enrolled in this course!!",
+      });
+    }
+    const enrolled = student.enrolledCourses.push(courseId);
+    student.save();
+    return res.status(httpStatusCode.OK).json({
+      success: true,
+      message: "Enrolled successfully!!",
+      data: enrolled,
+    });
+  } catch (error) {
     return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "Something went wrong !!",
       error: error.message,
     });
   }
-}
+};
 
 module.exports = {
   AddCourse,
