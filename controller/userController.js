@@ -206,7 +206,6 @@ const UpdateStudentDetails = async (req, res) => {
       username,
       password,
       confirmPassword,
-      profileImage,
       pincode,
       address,
       city,
@@ -214,7 +213,8 @@ const UpdateStudentDetails = async (req, res) => {
       aboutInfo,
       personalWebsite,
       githubProfile,
-    } = req.body.userDetails;
+    } = req.body;
+    const profileImage=req.file.filename;
 
     const updatedUser = await UserModel.findByIdAndUpdate(
       req.user._id,

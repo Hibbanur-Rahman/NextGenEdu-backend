@@ -2,7 +2,7 @@ const express = require("express");
 const Router = express.Router();
 const { register, login } = require("../controller/adminController");
 const { registerUser, loginUser,ViewUsers, ViewStudentDetails, UpdateStudentDetails } = require("../controller/userController");
-const { verifyToken } = require("../middleware/authMiddleware");
+const { verifyToken, verifyTokenNew } = require("../middleware/authMiddleware");
 const { ViewTeacherDetails, UpdateTeacherDetails } = require("../controller/teacherController");
 const upload = require("../middleware/multerMiddleware");
 const { AddCourse,ViewCourses, ViewPublishCourseByTeacher, ViewCourseDetailByID, EnrolledCourseByStudentId,ViewEnrolledStudentId } = require("../controller/courseController");
@@ -22,7 +22,7 @@ Router.post('/update-teacher-details',verifyToken,UpdateTeacherDetails);
 
 //student routes
 Router.post('/view-student-details',verifyToken,ViewStudentDetails);
-Router.post('/update-student-details',verifyToken,UpdateStudentDetails);
+Router.post('/update-student-details',verifyTokenNew,upload.single('profileImage'),UpdateStudentDetails);
 
 //upload the profile image
 Router.post('/upload-profile',upload.single('profileImage'));

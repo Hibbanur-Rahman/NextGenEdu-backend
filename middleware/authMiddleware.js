@@ -27,8 +27,29 @@ async function verifyToken(req, res, next) {
         return res.status(httpStatusCode.UNAUTHORIZED).json({ success: false, message: 'Unauthorized: Invalid token' });
     }
 }
+async function verifyTokenNew(req, res, next) {
+    const token = req.headers.authorization;
+    console.log(token)
+    if (!token) {
+        return res.status(httpStatusCode.UNAUTHORIZED).json({ success: false, message: 'Unauthorized: Token not provided' });
+    }
+
+    try {
+        // Split the authorization header by space and directly use the token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded.user;
+        console.log(req.user)
+        // console.log("token:", token);
+        // console.log("secreate key:",process.env.JWT_SECRET)
+        next();
+    } catch (error) {
+        console.error('Error verifying token:', error);
+        return res.status(httpStatusCode.UNAUTHORIZED).json({ success: false, message: 'Unauthorized: Invalid token' });
+    }
+}
 
 module.exports = {
     getToken,
-    verifyToken
+    verifyToken,
+    verifyTokenNew
 }
