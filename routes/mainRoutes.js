@@ -5,7 +5,7 @@ const { registerUser, loginUser,ViewUsers, ViewStudentDetails, UpdateStudentDeta
 const { verifyToken } = require("../middleware/authMiddleware");
 const { ViewTeacherDetails, UpdateTeacherDetails } = require("../controller/teacherController");
 const upload = require("../middleware/multerMiddleware");
-const { AddCourse,ViewCourses, ViewPublishCourseByTeacher, ViewCourseDetailByID, EnrolledCourseByStudentId } = require("../controller/courseController");
+const { AddCourse,ViewCourses, ViewPublishCourseByTeacher, ViewCourseDetailByID, EnrolledCourseByStudentId,ViewEnrolledStudentId } = require("../controller/courseController");
 const { AddWishlist, ViewWishlistDetails } = require("../controller/wishlistController");
 
 
@@ -40,5 +40,6 @@ Router.post('/view-wishlist',verifyToken,ViewWishlistDetails);
 
 //enrolled course by student routes
 Router.post('/add-enrolled',verifyToken,EnrolledCourseByStudentId);
+Router.post('/view-enrolled-by-studentID',verifyToken,ViewEnrolledStudentId);
 
 module.exports = Router;

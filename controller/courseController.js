@@ -202,10 +202,37 @@ const EnrolledCourseByStudentId = async (req, res) => {
   }
 };
 
+// View enrolled courses by studentId
+const ViewEnrolledStudentId=async (req,res)=>{
+  try{
+    const studentId=req.user._id;
+    const student=await StudentModel.findById(studentId).populate('enrolledCourses');
+    if(!student){
+      return res.status(httpStatusCode.NOT_FOUND).json({
+        success:false,
+        message:"Student not found!!"
+      })
+    }
+
+    return res.status(httpStatusCode.OK).json({
+      success:true,
+      message:'Enrolled courses',
+      data:student.enrolledCourses
+    })
+  }catch(error){
+    return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
+      success:false,
+      message:"Something went wrong!!",
+      error:error.message
+    })
+  }
+}
+
 module.exports = {
   AddCourse,
   ViewCourses,
   ViewPublishCourseByTeacher,
   ViewCourseDetailByID,
   EnrolledCourseByStudentId,
+  ViewEnrolledStudentId
 };
