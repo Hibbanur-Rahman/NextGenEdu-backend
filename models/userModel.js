@@ -74,10 +74,17 @@ const UserSchema = new mongoose.Schema(
         ref:'course'
       }
     ],
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "review",
+      },
+    ],
     role: {
       type: String,
       required: true,
     },
+
   },
   { timestamps: true }
 );

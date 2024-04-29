@@ -37,15 +37,22 @@ const CourseSchema = new mongoose.Schema(
       type: [],
       required: false,
     },
-    teacherId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"teacher",
-        required:false
+    teacherId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "teacher",
+      required: false,
     },
-    status:{
-      type:String,
-      required:false
-    }
+    status: {
+      type: String,
+      required: false,
+    },
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "review",
+        required: false,
+      },
+    ],
   },
   { timestamps: true }
 );
