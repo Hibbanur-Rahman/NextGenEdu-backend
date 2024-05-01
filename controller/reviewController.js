@@ -14,7 +14,8 @@ const AddReview = async (req, res) => {
             });
         }
 
-        const { courseId, rating, reviewText } = req.body;
+        const { courseId} = req.body;
+        const {rating, reviewText }=req.body.reviewDetails;
         const userId = req.user._id;
 
         if (!courseId || !userId) {
