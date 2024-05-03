@@ -114,7 +114,38 @@ const ViewReviewListByCourseId = async (req, res) => {
       }
 };
 
+const ViewReviewListByStudentId=async (req,res)=>{
+  try{
+    const userId=req.user._id;
+    if(!userId){
+      return res.status(httpStatusCode.BAD_REQUEST).json({
+        success:false,
+        message:"User is not found"
+      })
+    }
+    const reviewList=await ReviewModel.find({student:userId}).populate('course').populate('student');
+    if(!reviewList){
+      return res.status(httpStatusCode.METHOD_NOT_ALLOWED).json({
+        success:false,
+        message:"No reviews found "
+      })
+    }
+    return res.status(httpStatusCode.OK).json({
+      success:true,
+      message:"Reviews list founded",
+      data:reviewList
+    })
+  }catch(error){
+    return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
+      success:false,
+      message:"Something went wrong !!",
+      error:error.message
+    })
+  }
+}
+
 module.exports = {
   AddReview,
   ViewReviewListByCourseId,
+  ViewReviewListByStudentId
 };
