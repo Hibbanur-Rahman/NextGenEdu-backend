@@ -79,73 +79,124 @@ const AddReview = async (req, res) => {
 };
 
 const ViewReviewListByCourseId = async (req, res) => {
-    try {
-        const { courseId } = req.body;
-    
-        if (!courseId) {
-          return res.status(httpStatusCode.BAD_REQUEST).json({
-            success: false,
-            message: "Invalid courseId",
-          });
-        }
-    
-        const reviewList = await ReviewModel.find({ course: courseId }).populate(
-          "student"
-        );
-    
-        if (!reviewList || reviewList.length === 0) {
-          return res.status(httpStatusCode.NOT_FOUND).json({
-            success: false,
-            message: "No reviews found for this course",
-          });
-        }
-    
-        return res.status(httpStatusCode.OK).json({
-          success: true,
-          message: "Review list",
-          data: reviewList,
-        });
-      } catch (error) {
-        return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
-          success: false,
-          message: "Something went wrong",
-          error: error.message,
-        });
-      }
+  try {
+    const { courseId } = req.body;
+
+    if (!courseId) {
+      return res.status(httpStatusCode.BAD_REQUEST).json({
+        success: false,
+        message: "Invalid courseId",
+      });
+    }
+
+    const reviewList = await ReviewModel.find({ course: courseId }).populate(
+      "student"
+    );
+
+    if (!reviewList || reviewList.length === 0) {
+      return res.status(httpStatusCode.NOT_FOUND).json({
+        success: false,
+        message: "No reviews found for this course",
+      });
+    }
+
+    return res.status(httpStatusCode.OK).json({
+      success: true,
+      message: "Review list",
+      data: reviewList,
+    });
+  } catch (error) {
+    return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Something went wrong",
+      error: error.message,
+    });
+  }
 };
 
-const ViewReviewListByStudentId=async (req,res)=>{
-  try{
-    const userId=req.user._id;
-    if(!userId){
+const ViewReviewListByStudentId = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    if (!userId) {
       return res.status(httpStatusCode.BAD_REQUEST).json({
-        success:false,
-        message:"User is not found"
-      })
+        success: false,
+        message: "User is not found",
+      });
     }
-    const reviewList=await ReviewModel.find({student:userId}).populate('course').populate('student');
-    if(!reviewList){
+    const reviewList = await ReviewModel.find({ student: userId })
+      .populate("course")
+      .populate("student");
+    if (!reviewList) {
       return res.status(httpStatusCode.METHOD_NOT_ALLOWED).json({
-        success:false,
-        message:"No reviews found "
-      })
+        success: false,
+        message: "No reviews found ",
+      });
     }
     return res.status(httpStatusCode.OK).json({
-      success:true,
-      message:"Reviews list founded",
-      data:reviewList
-    })
-  }catch(error){
+      success: true,
+      message: "Reviews list founded",
+      data: reviewList,
+    });
+  } catch (error) {
     return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
-      success:false,
-      message:"Something went wrong !!",
-      error:error.message
-    })
+      success: false,
+      message: "Something went wrong !!",
+      error: error.message,
+    });
   }
-}
+};
+
+const EditReviewStudentId = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    if (!userId) {
+      return res.status(httpStatusCode.BAD_REQUEST).json({
+        success: false,
+        message: "user is not found",
+      });
+    }
+    const { reviewId, reviewText, rating } = req.body;
+    if (!reviewId) {
+      return res.status(httpStatusCode.BAD_REQUEST).json({
+        success: false,
+        message: "ReviewId is not found",
+      });
+    }
+
+    const review = await ReviewModel.findByIdAndUpdate(
+      reviewId,
+      {
+        reviewText,
+        rating,
+      },
+      { new: true }
+    );
+
+    if (!review) {
+      return res.status(httpStatusCode.METHOD_NOT_ALLOWED).json({
+        success: false,
+        message: "error in review model",
+      });
+    }
+
+
+    return res.status(httpStatusCode.OK).json({
+      success: true,
+      message: "review updated successfully",
+      data: review,
+    });
+  } catch (error) {
+    return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Something went wrong!!",
+      error: error.message,
+    });
+  }
+};
 
 module.exports = {
   AddReview,
   ViewReviewListByCourseId,
-  ViewReviewListByStudentId
+  ViewReviewListByStudentId,
+  EditReviewStudentId
 };
