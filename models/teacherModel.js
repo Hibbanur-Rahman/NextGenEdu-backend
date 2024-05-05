@@ -70,6 +70,12 @@ const TeacherSchema = new mongoose.Schema(
         type:mongoose.Schema.Types.ObjectId,
         ref:"course"
       }
+    ],
+    forumQuestion:[
+      {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'forum'
+      }
     ]
   },
   { timestamps: true }

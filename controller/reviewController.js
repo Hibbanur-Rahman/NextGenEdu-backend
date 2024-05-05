@@ -194,9 +194,93 @@ const EditReviewStudentId = async (req, res) => {
   }
 };
 
+
+const DeleteReviewStudentId=async (req,res)=>{
+  try{
+    const userId=req.user._id;
+    if(!userId){
+      return res.status(httpStatusCode.BAD_REQUEST).json({
+        success:false,
+        message:"User is not valid"
+      })
+    }
+    const {reviewId}=req.body;
+    if(!reviewId){
+      return res.status(httpStatusCode.BAD_REQUEST).json({
+        success:false,
+        message:"reviewId is not valid"
+      })
+    }
+
+    const review=await ReviewModel.deleteOne({ _id: reviewId });
+    if(!review){
+      return res.status(httpStatusCode.BAD_REQUEST).json({
+        success:false,
+        message:"review is not delete"
+      })
+    }
+  
+
+    return res.status(httpStatusCode.OK).json({
+      success:true,
+      message:"Review is delete",
+      data:review
+    })
+  }catch(error){
+    return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
+      success:false,
+      message:"Something went wrong !!",
+      error:error.message
+    })
+  }
+}
+
+const IsReviewedByStudentIdCourseId=async (req,res)=>{
+  try{
+    const userId=req.user._id;
+    if(!userId){
+      return res.status(httpStatusCode.BAD_REQUEST).json({
+        success:false,
+        message:"userId is required"
+      })
+    }
+    const {courseId}=req.body;
+    if(!courseId){
+      return res.status(httpStatusCode.BAD_REQUEST).json({
+        success:false,
+        message:"CourseId is not found "
+      })
+    }
+
+    const IsExistReviewCourseId=await ReviewModel.find({course:courseId,student:userId});
+    if(IsExistReviewCourseId.length>0){
+      return res.status(httpStatusCode.OK).json({
+        success:true,
+        message:"Review is already added",
+        data:IsExistReviewCourseId
+      })
+    }
+
+    return res.status(httpStatusCode.BAD_REQUEST).json({
+      success:false,
+      message:"Review is not added yet",
+      data:IsExistReviewCourseId
+    })
+
+  }catch(error){
+    return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
+      success:false,
+      message:"Something went wrong !!",
+      error:error.message
+    })
+  
+  }
+}
 module.exports = {
   AddReview,
   ViewReviewListByCourseId,
   ViewReviewListByStudentId,
-  EditReviewStudentId
+  EditReviewStudentId,
+  DeleteReviewStudentId,
+  IsReviewedByStudentIdCourseId
 };

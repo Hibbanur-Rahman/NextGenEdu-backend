@@ -7,7 +7,8 @@ const { ViewTeacherDetails, UpdateTeacherDetails } = require("../controller/teac
 const upload = require("../middleware/multerMiddleware");
 const { AddCourse,ViewCourses, ViewPublishCourseByTeacher, ViewCourseDetailByID, EnrolledCourseByStudentId,ViewEnrolledStudentId } = require("../controller/courseController");
 const { AddWishlist, ViewWishlistDetails } = require("../controller/wishlistController");
-const { AddReview, ViewReviewListByCourseId, ViewReviewListByStudentId, EditReviewStudentId } = require("../controller/reviewController");
+const { AddReview, ViewReviewListByCourseId, ViewReviewListByStudentId, EditReviewStudentId, DeleteReviewStudentId,IsReviewedByStudentIdCourseId } = require("../controller/reviewController");
+const { AddQuestion } = require("../controller/forumController");
 
 
 Router.post("/register", register);
@@ -49,4 +50,12 @@ Router.post('/add-review',verifyTokenNew,AddReview);
 Router.post('/view-Review-courseId',ViewReviewListByCourseId);
 Router.post('/view-Review-list-studentId',verifyToken,ViewReviewListByStudentId);
 Router.post('/edit-review-studentId',verifyTokenNew,EditReviewStudentId);
+Router.post('/delete-review-studentId',verifyTokenNew,DeleteReviewStudentId);
+Router.post('/isReviewed-studentId-courseId',verifyTokenNew,IsReviewedByStudentIdCourseId);
+
+
+//Forum routes
+Router.post('/add-question',verifyTokenNew,AddQuestion);
+
+
 module.exports = Router;
