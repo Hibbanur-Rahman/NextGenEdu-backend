@@ -264,7 +264,6 @@ const IsReviewedByStudentIdCourseId=async (req,res)=>{
     return res.status(httpStatusCode.BAD_REQUEST).json({
       success:false,
       message:"Review is not added yet",
-      data:IsExistReviewCourseId
     })
 
   }catch(error){

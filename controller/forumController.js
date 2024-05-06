@@ -28,7 +28,7 @@ const AddQuestion = async (req, res) => {
     const Forum = await ForumModel.create({
       question,
       description,
-      tagsList,
+      tags:tagsList,
       userId,
       role: req.user.role
     });
