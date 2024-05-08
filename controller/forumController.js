@@ -66,6 +66,25 @@ const AddQuestion = async (req, res) => {
   }
 };
 
+const ViewForumQuestionList=async(req,res)=>{
+  try{
+
+    const ForumQuestionList=await ForumModel.find();
+    return res.status(httpStatusCode.OK).json({
+      success:true,
+      message:"Forum Question List",
+      data:ForumQuestionList
+    })
+  }catch(error){
+    console.error(error);
+    return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
+      success:false,
+      message:"Something went wrong!!",
+      error:error.message,
+    })
+  }
+}
 module.exports = {
   AddQuestion,
+  ViewForumQuestionList
 };
