@@ -23,15 +23,26 @@ const AddQuestion = async (req, res) => {
     }
 
     const { question, description, tags } = req.body.questionDetails;
-    const tagsList = tags.split(',');
-
-    const Forum = await ForumModel.create({
-      question,
-      description,
-      tags:tagsList,
-      userId,
-      role: req.user.role
-    });
+    const tagsList = tags.split(",");
+    const role = req.user.role;
+    let Forum;
+    if (role === "student") {
+      Forum = await ForumModel.create({
+        question,
+        description,
+        tags: tagsList,
+        studentId: userId,
+        role,
+      });
+    } else if (role === "teacher") {
+      Forum = await ForumModel.create({
+        question,
+        description,
+        tags: tagsList,
+        teacherId: userId,
+        role,
+      });
+    }
 
     let userUpdateQuery = {};
     if (req.user.role === "student") {
@@ -41,7 +52,9 @@ const AddQuestion = async (req, res) => {
     }
 
     const User = req.user.role === "student" ? StudentModel : TeacherModel;
-    const updatedUser = await User.findByIdAndUpdate(userId, userUpdateQuery, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(userId, userUpdateQuery, {
+      new: true,
+    });
 
     if (!updatedUser) {
       return res.status(httpStatusCode.BAD_REQUEST).json({
@@ -53,9 +66,8 @@ const AddQuestion = async (req, res) => {
     return res.status(httpStatusCode.CREATED).json({
       success: true,
       message: "Question added",
-      data: Forum
+      data: Forum,
     });
-
   } catch (error) {
     console.error(error);
     return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
@@ -66,25 +78,24 @@ const AddQuestion = async (req, res) => {
   }
 };
 
-const ViewForumQuestionList=async(req,res)=>{
-  try{
-
-    const ForumQuestionList=await ForumModel.find();
+const ViewForumQuestionList = async (req, res) => {
+  try {
+    const ForumQuestionList = await ForumModel.find().populate("studentId").populate("teacherId");
     return res.status(httpStatusCode.OK).json({
-      success:true,
-      message:"Forum Question List",
-      data:ForumQuestionList
-    })
-  }catch(error){
+      success: true,
+      message: "Forum Question List",
+      data: ForumQuestionList,
+    });
+  } catch (error) {
     console.error(error);
     return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
-      success:false,
-      message:"Something went wrong!!",
-      error:error.message,
-    })
+      success: false,
+      message: "Something went wrong!!",
+      error: error.message,
+    });
   }
-}
+};
 module.exports = {
   AddQuestion,
-  ViewForumQuestionList
+  ViewForumQuestionList,
 };

@@ -15,31 +15,34 @@ const ForumSchema = new mongoose.Schema(
         type: String,
       },
     ],
-    role:{
-        type:String,
-        required:true
+    role: {
+      type: String,
+      required: true,
     },
-    userId:{
-        type:String,
-        required:true
+    studentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
-    answers:[
-        {
-            answer:{
-                type:String,
-            },
-            answerBy:{
-                type:mongoose.Schema.Types.ObjectId,
-                ref:'User'
-            },
-            role:{
-                type:String
-            }
-        }
-    ]
+    teacherId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "teacher",
+    },
+    answers: [
+      {
+        answer: {
+          type: String,
+        },
+        answerBy: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        role: {
+          type: String,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );
 
-
-module.exports=mongoose.model('forum',ForumSchema);
+module.exports = mongoose.model("forum", ForumSchema);
