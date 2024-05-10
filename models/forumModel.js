@@ -27,17 +27,37 @@ const ForumSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "teacher",
     },
+    vote:{
+      type:Number,
+      default:0  
+    },
     answers: [
       {
         answer: {
           type: String,
         },
-        answerBy: {
+        vote:{
+          type:Number,
+          default:0  
+        },
+        studentId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "User",
         },
+        teacherId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "teacher",
+        },
         role: {
           type: String,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+        updatedAt: {
+          type: Date,
+          default: Date.now,
         },
       },
     ],

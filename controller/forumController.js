@@ -80,7 +80,9 @@ const AddQuestion = async (req, res) => {
 
 const ViewForumQuestionList = async (req, res) => {
   try {
-    const ForumQuestionList = await ForumModel.find().populate("studentId").populate("teacherId");
+    const ForumQuestionList = await ForumModel.find()
+      .populate("studentId")
+      .populate("teacherId");
     return res.status(httpStatusCode.OK).json({
       success: true,
       message: "Forum Question List",
@@ -95,7 +97,123 @@ const ViewForumQuestionList = async (req, res) => {
     });
   }
 };
+
+const ViewForumWithQuestionId = async (req, res) => {
+  try {
+    const { questionId } = req.body;
+    if (!questionId) {
+      return res.status(httpStatusCode.BAD_REQUEST).json({
+        success: false,
+        message: "Please provide the question Id",
+      });
+    }
+    const ForumQuestion = await ForumModel.findById(questionId)
+    .populate({
+      path: "studentId"
+    })
+    .populate({
+      path: "answers",
+      populate: { 
+        path: "studentId",
+      } 
+    })
+    .populate({
+      path: "answers",
+      populate: { 
+        path: "teacherId",
+      } 
+    })
+    .populate("teacherId");
+    if (!ForumQuestion) {
+      return res.status(httpStatusCode.NOT_FOUND).json({
+        success: false,
+        message: "Question not found",
+      });
+    }
+
+    return res.status(httpStatusCode.OK).json({
+      success: true,
+      message: "Forum Question",
+      data: ForumQuestion,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Something went wrong!!",
+      error: error.message,
+    });
+  }
+};
+
+const AddForumAnswer=async(req,res)=>{
+  try{
+    const {questionId,answer}=req.body;
+    if(!questionId || !answer){
+      return res.status(httpStatusCode.BAD_REQUEST).json({
+        success:false,
+        message:"please provide the questionId and answer"
+      })
+    }
+
+    const userId=req.user._id;
+    if(!userId){
+      return res.status(httpStatusCode.BAD_REQUEST).json({
+        success:false,
+        message:"UserId is not provided"
+      })
+    }
+    const role=req.user.role;
+    let ForumAnswer={};
+    if(role==='student'){
+      ForumAnswer=await ForumModel.findByIdAndUpdate(questionId,{
+        $push:{
+          answers:{
+            answer,
+            studentId:userId,
+            vote:0,
+            role
+          }
+        }
+      })
+    }else if(role==='teacher'){
+      ForumAnswer=await ForumModel.findByIdAndUpdate(questionId,{
+        $push:{
+          answers:{
+            answer,
+            teacherId:userId,
+            vote:0,
+            role
+          }
+        }
+      })
+    }
+    
+    if(!ForumAnswer){
+      return res.status(httpStatusCode.NOT_FOUND).json({
+        success:false,
+        message:"Forum question is not found"
+      })
+    }
+
+    return res.status(httpStatusCode.OK).json({
+      success:true,
+      message:"Answer added successfully",
+      data:ForumAnswer
+    })
+
+  }catch(error){
+    console.log(error);
+    return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
+      success:false,
+      message:"Something went wrong!!",
+      error:error.message
+    })
+  }
+}
 module.exports = {
   AddQuestion,
   ViewForumQuestionList,
+  ViewForumWithQuestionId,
+  AddForumAnswer
 };

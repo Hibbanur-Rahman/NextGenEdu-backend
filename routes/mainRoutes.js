@@ -8,7 +8,7 @@ const upload = require("../middleware/multerMiddleware");
 const { AddCourse,ViewCourses, ViewPublishCourseByTeacher, ViewCourseDetailByID, EnrolledCourseByStudentId,ViewEnrolledStudentId } = require("../controller/courseController");
 const { AddWishlist, ViewWishlistDetails } = require("../controller/wishlistController");
 const { AddReview, ViewReviewListByCourseId, ViewReviewListByStudentId, EditReviewStudentId, DeleteReviewStudentId,IsReviewedByStudentIdCourseId } = require("../controller/reviewController");
-const { AddQuestion, ViewForumQuestionList } = require("../controller/forumController");
+const { AddQuestion, ViewForumQuestionList, ViewForumWithQuestionId, AddForumAnswer } = require("../controller/forumController");
 
 
 Router.post("/register", register);
@@ -57,6 +57,7 @@ Router.post('/isReviewed-studentId-courseId',verifyTokenNew,IsReviewedByStudentI
 //Forum routes
 Router.post('/add-question',verifyTokenNew,AddQuestion);
 Router.post('/view-Forum-QuestionList',ViewForumQuestionList);
-
+Router.post('/view-forum-question-id',ViewForumWithQuestionId);
+Router.post('/add-forum-answer',verifyTokenNew,AddForumAnswer);
 
 module.exports = Router;
