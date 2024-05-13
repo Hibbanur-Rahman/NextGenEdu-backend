@@ -196,6 +196,25 @@ const AddForumAnswer=async(req,res)=>{
       })
     }
 
+    let userUpdateQuery = {};
+    if (req.user.role === "student") {
+      userUpdateQuery = { $push: { forumAnswer: ForumAnswer._id } };
+    } else if (req.user.role === "teacher") {
+      userUpdateQuery = { $push: { forumAnswer: ForumAnswer._id } };
+    }
+
+    const User = req.user.role === "student" ? StudentModel : TeacherModel;
+    const updatedUser = await User.findByIdAndUpdate(userId, userUpdateQuery, {
+      new: true,
+    });
+
+    if (!updatedUser) {
+      return res.status(httpStatusCode.BAD_REQUEST).json({
+        success: false,
+        message: `${req.user.role} is not found and push the forum question`,
+      });
+    }
+
     return res.status(httpStatusCode.OK).json({
       success:true,
       message:"Answer added successfully",
@@ -211,9 +230,44 @@ const AddForumAnswer=async(req,res)=>{
     })
   }
 }
+
+const ViewForumQuestionListWithStudentId=async(req,res)=>{
+  try{
+
+    const userId=req.user._id;
+    if(!userId){
+      return res.status(httpStatusCode.BAD_REQUEST).json({
+        success:false,
+        message:"UserId is not provided"
+      })
+    }
+
+    const QuestionList=await StudentModel.findById(userId).populate('forumQuestion').populate('forumAnswer');
+    if(!QuestionList){
+      return res.status(httpStatusCode.NOT_FOUND).json({
+        success:false,
+        message:"user is not found"
+      })
+    }
+
+    return res.status(httpStatusCode.OK).json({
+      success:true,
+      message:"Forum Question List",
+      data:QuestionList
+    })
+  }catch(error){
+    console.log(error);
+    return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).json({
+      success:false,
+      message:"Something went wrong!!",
+      error:error.message
+    })
+  }
+}
 module.exports = {
   AddQuestion,
   ViewForumQuestionList,
   ViewForumWithQuestionId,
-  AddForumAnswer
+  AddForumAnswer,
+  ViewForumQuestionListWithStudentId
 };
