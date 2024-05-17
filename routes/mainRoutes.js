@@ -43,6 +43,8 @@ const {
   UpdateQuestion,
   DeleteQuestion,
   ViewAnswerWithStudentId,
+  UpdateAnswerWithStudentId,
+  DeleteAnswerStudentID,
 } = require("../controller/forumController");
 
 Router.post("/register", register);
@@ -115,4 +117,7 @@ Router.post(
 Router.post("/update-question", verifyTokenNew, UpdateQuestion);
 Router.post('/delete-question',verifyTokenNew,DeleteQuestion);
 Router.post('/view-answerList-studentId',verifyTokenNew,ViewAnswerWithStudentId);
+Router.post('/update-answer-studentId',verifyTokenNew,UpdateAnswerWithStudentId);
+Router.post('/delete-answer-studentId',verifyTokenNew,DeleteAnswerStudentID);
+
 module.exports = Router;
