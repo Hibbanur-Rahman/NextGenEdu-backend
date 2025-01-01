@@ -1,6 +1,6 @@
 const express = require("express");
 const Router = express.Router();
-const { register, login } = require("../controller/adminController");
+const { register, login, ViewAdminDetails } = require("../controller/adminController");
 const {
   registerUser,
   loginUser,
@@ -66,6 +66,10 @@ Router.post(
   upload.single("profileImage"),
   UpdateStudentDetails
 );
+
+
+//admin routes
+Router.post("/view-admin-details", verifyToken, ViewAdminDetails);
 
 //upload the profile image
 Router.post("/upload-profile", upload.single("profileImage"));
